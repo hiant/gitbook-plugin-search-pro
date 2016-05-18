@@ -5,8 +5,7 @@ var
     path = require('path'),
 
     _ = require('lodash'),
-    nodejieba = require('nodejieba'),
-
+    Segment = require('segment'),
 
     /**
      * 所有配置
@@ -54,8 +53,10 @@ module.exports = {
             // 导入book.json里面插件配置中的自定义词典
             // nodejieba.insertWord("word1","word2",....);
 
-            nodejieba.insertWord.apply(this,pluginConfig.defineWord);
+            // nodejieba.insertWord.apply(this,pluginConfig.defineWord);
 
+            var segment = new Segment();
+            segment.useDefault();
         },
 
         "page": function(page){
@@ -70,7 +71,7 @@ module.exports = {
             }
 
             // 分词
-            var words = _.uniq( nodejieba.cut(page.content) );
+            var words = _.uniq( segment.doSegment(page.content) );
 
             // 去重
             _(words).forEach(function(word) {
