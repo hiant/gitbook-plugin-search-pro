@@ -8,15 +8,6 @@ var
     Segment = require('segment'),
     segment = new Segment(),
     /**
-     * 所有配置
-     */
-    config,
-    /**
-     * 插件配置
-     * @type object
-     */
-    pluginConfig,
-    /**
      * 页面索引容器
      * @type object
      */
@@ -45,16 +36,14 @@ module.exports = {
     hooks: {
 
         "init" : function(){
-            config = this.options;
-            pluginConfig = this.options.pluginsConfig['search-pro'];
             segment.useDefault();
         },
         "page": function(page){
             // 建立页面内容索引
             pageIndex[pageId] = {
                 path : page.path.replace(/readme\.md$/i,'index.html').replace(/\.md$/,'.html'),
-                title : page.progress.current.title,
-                level : page.progress.current.level
+                title : page.title,
+                level : page.level
             }
 
             // 分词
@@ -80,7 +69,7 @@ module.exports = {
         },
         "finish": function() {
             // 最终写入索引数据
-            fs.writeFileSync(path.join(config.output , './search_pro_index.json'),
+            fs.writeFileSync(path.join(this.output.root() , './search_pro_index.json'),
                 JSON.stringify(
                     {
                         pageIndex : pageIndex,
